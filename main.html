@@ -1,17 +1,71 @@
+
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Memory Management</title>
+</head>
+<body>
+  <button id="generate">Generate Elements</button>
+  <button id="remove">Remove Elements</button>
+  <div id="memory-usage">Memory Usage: 50 MB</div>
+  <div id="display-area" style="border: 1px solid black; margin-top: 10px; height: 400px; overflow-y: auto;"></div>
+  <script>
+    // Selecting necessary DOM elements
+    const generateBtn = document.getElementById("generate");
+    const removeBtn = document.getElementById("remove");
+    const displayArea = document.getElementById("display-area");
+    const memoryUsageLabel = document.getElementById("memory-usage");
 
-<html>
-  <head>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+    // Helper function to get current memory usage
+    function getMemoryUsage() {
+      if (performance.memory) {
+        const usedHeap = performance.memory.usedJSHeapSize / 1024 / 1024; // Convert to MB
+        return usedHeap;
+      }
+      return null; // If browser does not support performance.memory
+    }
 
-  <body>
-    <h1>Memory Management</h1>
-    <p>Click the button to generate DOM elements:</p>
-    <button id="generate">Generate Elements</button>
-    <p>Click the button to remove DOM elements:</p>
-    <button id="remove">Remove Elements</button>
-    <p id="memory"></p>
-    <script type="text/javascript" src="./script.js"></script>
-  </body>
+    // Function to generate 10,000 elements
+    function generateElements() {
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < 10000; i++) {
+        const div = document.createElement("div");
+        div.textContent = `Element ${i + 1}`;
+        fragment.appendChild(div);
+      }
+      displayArea.appendChild(fragment);
+      updateMemoryUsage();
+    }
+
+    // Function to remove all elements
+    function removeElements() {
+      displayArea.innerHTML = "";
+      updateMemoryUsage();
+    }
+
+    // Function to update memory usage and handle alerts
+    function updateMemoryUsage() {
+      const usedHeap = getMemoryUsage();
+      if (usedHeap !== null) {
+        memoryUsageLabel.textContent = `Memory Usage: ${usedHeap.toFixed(2)} MB`;
+        if (usedHeap > 50) {
+          alert(
+            "Memory usage has exceeded 50 MB. Please optimize your actions to reduce memory consumption."
+          );
+        }
+      } else {
+        memoryUsageLabel.textContent = "Memory Usage: Not supported in this browser.";
+      }
+    }
+
+    // Event listeners
+    generateBtn.addEventListener("click", generateElements);
+    removeBtn.addEventListener("click", removeElements);
+
+    // Initial memory usage display
+    updateMemoryUsage();
+  </script>
+</body>
 </html>
