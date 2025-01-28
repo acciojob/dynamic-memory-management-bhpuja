@@ -3,111 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Memory Management</title>
+    <title>Quiz Question</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            line-height: 1.6;
             margin: 20px;
         }
-
-        #controls {
+        .question {
             margin-bottom: 20px;
         }
-
-        #generate, #remove {
-            padding: 10px 20px;
-            margin-right: 10px;
-            font-size: 16px;
-            cursor: pointer;
+        .options {
+            margin-left: 20px;
         }
-
-        #memory-usage {
-            margin-top: 10px;
+        blockquote {
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 15px;
+            border-left: 8px solid green;
+            background-color: #f8fffe;
             font-weight: bold;
         }
-
-        #container {
+        .result {
             margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: auto;
-            background-color: #f9f9f9;
-        }
-
-        .element {
-            padding: 5px;
-            margin: 2px 0;
-            background-color: #e0e0e0;
-            border: 1px solid #ddd;
+            font-weight: bold;
         }
     </style>
+    <script>
+        function checkAnswer() {
+            const options = document.getElementsByName('capital');
+            let selectedValue = '';
+            for (const option of options) {
+                if (option.checked) {
+                    selectedValue = option.value;
+                    break;
+                }
+            }
+            const result = document.getElementById('result');
+            if (selectedValue === 'new-delhi') {
+                result.textContent = 'Correct! New Delhi is the capital of India.';
+                result.style.color = 'green';
+            } else if (selectedValue === 'mumbai') {
+                result.textContent = 'Incorrect. Mumbai is not the capital of India.';
+                result.style.color = 'red';
+            } else {
+                result.textContent = 'Please select an answer.';
+                result.style.color = 'orange';
+            }
+        }
+    </script>
 </head>
 <body>
-    <div id="controls">
-        <button id="generate">Generate</button>
-        <button id="remove">Remove</button>
-        <div id="memory-usage">Heap Memory Usage: Calculating...</div>
+    <div class="question-space">
+        <div class="question">
+            <h2>What is the capital of India?</h2>
+        </div>
+        <div class="options">
+            <label><input type="radio" name="capital" value="new-delhi"> New Delhi</label><br>
+            <label><input type="radio" name="capital" value="mumbai"> Mumbai</label>
+        </div>
+        <button onclick="checkAnswer()">Submit</button>
+        <div id="result" class="result"></div>
+        <blockquote>
+            "New Delhi is the capital of India and an administrative district of NCT Delhi." <br> - Wikipedia
+        </blockquote>
     </div>
-    <div id="container"></div>
-
-    <script>
-        // Get references to the DOM elements
-        const generateButton = document.getElementById("generate");
-        const removeButton = document.getElementById("remove");
-        const container = document.getElementById("container");
-        const memoryUsageDisplay = document.getElementById("memory-usage");
-
-        // Set the memory threshold in bytes (50 MB)
-        const MEMORY_THRESHOLD = 50 * 1024 * 1024;
-
-        // Function to format memory usage in MB
-        function formatMemoryUsage(bytes) {
-            return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-        }
-
-        // Function to check heap memory usage
-        function checkMemoryUsage() {
-            if (performance.memory) {
-                const usedHeap = performance.memory.usedJSHeapSize;
-                memoryUsageDisplay.textContent = `Heap Memory Usage: ${formatMemoryUsage(usedHeap)}`;
-
-                // Alert if memory usage exceeds the threshold
-                if (usedHeap > MEMORY_THRESHOLD) {
-                    alert("Memory usage has exceeded 50 MB. Please optimize your actions to reduce memory consumption.");
-                }
-            } else {
-                memoryUsageDisplay.textContent = "Heap memory tracking is not supported in this browser.";
-            }
-        }
-
-        // Generate elements
-        function generateElements() {
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < 10000; i++) {
-                const div = document.createElement("div");
-                div.textContent = `Element ${i + 1}`;
-                div.className = "element";
-                fragment.appendChild(div);
-            }
-            container.appendChild(fragment);
-            checkMemoryUsage();
-        }
-
-        // Remove all elements
-        function removeElements() {
-            container.innerHTML = "";
-            checkMemoryUsage();
-        }
-
-        // Attach event listeners
-        generateButton.addEventListener("click", generateElements);
-        removeButton.addEventListener("click", removeElements);
-
-        // Initial memory check
-        checkMemoryUsage();
-    </script>
 </body>
 </html>
+
 
 
